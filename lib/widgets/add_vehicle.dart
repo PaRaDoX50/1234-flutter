@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'home.dart';
+import 'package:project/utils/database_methods.dart';
+import '../home.dart';
 
 class AddVehicle extends StatefulWidget {
   @override
@@ -14,13 +15,12 @@ class _AddVehicleState extends State<AddVehicle> {
   TextEditingController passwordController = TextEditingController();
 
   bool isLoading = false;
-
+  DatabaseMethods _databaseMethods = DatabaseMethods();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text("Login")),
-        body: Container(child: Text("addvehilce"))
-        );
+    return Container(height: 300,color: Colors.amber,child: Column(children: [
+      TextField(),TextField(),RaisedButton(child: Text("Submit"),onPressed: (){_databaseMethods.addVehicle(name: "avadrakedavra");},)
+    ],));
   }
 
 

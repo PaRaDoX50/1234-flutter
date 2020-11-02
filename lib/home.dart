@@ -1,17 +1,31 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:project/model/vehicle.dart';
+import 'package:project/utils/database_methods.dart';
 
-import 'add_vehicle.dart';
+import 'widgets/add_vehicle.dart';
 import 'signup.dart';
 
 class Home extends StatelessWidget {
+
+
   Home({this.uid});
   final String uid;
   final String title = "Home";
 
+  void startAddingVehicle(BuildContext ctx) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (idgaf) {
+          return AddVehicle();
+        });
+  }
+
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: AppBar(
           title: Text(title),
@@ -38,10 +52,11 @@ class Home extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddVehicle()),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => AddVehicle()),
+            // );
+            startAddingVehicle(context);
           },
           child: Icon(Icons.add),
           backgroundColor: Colors.blue,
@@ -56,11 +71,22 @@ class HomeBody extends StatefulWidget {
 }
 
 class _HomeBodyState extends State<HomeBody> {
+  DatabaseMethods _databaseMethods = DatabaseMethods();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text("hello"),
-    );
+
+    return StreamBuilder<List<Vehicle>>(stream: _databaseMethods.getVehicles(),builder: (_,snapshot){ if(snapshot.hasData){
+      return ListView.builder(itemBuilder:(_,index){
+        return ListTile(title: Text(snapshot.data[index].name),);
+      },itemCount: snapshot.data.length, );
+    }
+    else{
+      if(snapshot.connectionState == ConnectionState.done){
+        return Center(child: Text("No Data"),);
+      }
+      return Center(child: CircularProgressIndicator(),);
+    }
+    },);
   }
 }
 
